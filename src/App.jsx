@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import moment from "moment";
 import { motion } from "framer-motion";
 import getIcon from "./utils/iconUtils";
 import Home from "./pages/Home";
@@ -11,6 +12,14 @@ function App() {
     const savedMode = localStorage.getItem("darkMode");
     return savedMode ? JSON.parse(savedMode) : window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
+  const [currentTime, setCurrentTime] = useState(moment().format('h:mm:ss A'));
+  
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(moment().format('h:mm:ss A'));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     localStorage.setItem("darkMode", JSON.stringify(darkMode));
@@ -38,7 +47,11 @@ function App() {
               Task<span className="text-primary">Flow</span>
             </h1>
           </div>
-          
+
+          <div className="hidden md:block font-medium text-surface-600 dark:text-surface-300">
+            <span className="mr-1">Current Time:</span>{currentTime}
+          </div>
+
           <button
             onClick={toggleDarkMode}
             className="p-2 rounded-full bg-surface-100 dark:bg-surface-700 hover:bg-surface-200 dark:hover:bg-surface-600 transition-colors"
