@@ -34,6 +34,7 @@ function App() {
 
   // Icon components
   const MoonIcon = getIcon("Moon");
+  const ClockIcon = getIcon("Clock");
   const SunIcon = getIcon("Sun");
   const CheckCircleIcon = getIcon("CheckCircle");
   
@@ -48,8 +49,11 @@ function App() {
             </h1>
           </div>
 
-          <div className="hidden md:block font-medium text-surface-600 dark:text-surface-300">
-            <span className="mr-1">Current Time:</span>{currentTime}
+          <div className="flex items-center font-medium text-surface-600 dark:text-surface-300 bg-surface-100 dark:bg-surface-700 px-3 py-1.5 rounded-full">
+            <ClockIcon className="h-4 w-4 mr-1.5 text-primary" />
+            <span>
+              <span className="mr-1.5">Current Time:</span><span className="font-semibold">{currentTime}</span>
+            </span>
           </div>
 
           <button
