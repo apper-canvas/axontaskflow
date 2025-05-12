@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import Draggable from "react-draggable";
 import moment from "moment";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import getIcon from "./utils/iconUtils";
 import Home from "./pages/Home";
 import NotFound from "./pages/NotFound";
@@ -13,6 +14,7 @@ function App() {
     return savedMode ? JSON.parse(savedMode) : window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
   const [currentTime, setCurrentTime] = useState(moment().format('h:mm:ss A'));
+  const [isDragging, setIsDragging] = useState(false);
   
   useEffect(() => {
     const timer = setInterval(() => {
@@ -37,6 +39,8 @@ function App() {
   const ClockIcon = getIcon("Clock");
   const SunIcon = getIcon("Sun");
   const CheckCircleIcon = getIcon("CheckCircle");
+  const MoveIcon = getIcon("Move");
+  const GripIcon = getIcon("GripHorizontal");
   
   return (
     <div className="min-h-screen flex flex-col">
@@ -76,11 +80,41 @@ function App() {
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 relative">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
+        
+        <Draggable
+          handle=".drag-handle"
+          bounds="parent"
+          onStart={() => setIsDragging(true)}
+          onStop={() => setIsDragging(false)}
+          defaultPosition={{x: 50, y: 50}}
+        >
+          <div 
+            className={`absolute w-64 rounded-xl ${
+              isDragging ? 'z-50' : 'z-10'
+            } bg-white dark:bg-surface-800 shadow-card dark:shadow-neu-dark 
+            border border-surface-200 dark:border-surface-700 overflow-hidden
+            transition-shadow ${isDragging ? 'shadow-xl' : ''}`}
+          >
+            <div className="drag-handle cursor-move p-2 bg-surface-100 dark:bg-surface-700 
+                           border-b border-surface-200 dark:border-surface-600 flex items-center justify-between">
+              <div className="flex items-center">
+                <GripIcon className="h-4 w-4 text-surface-500 dark:text-surface-400 mr-2" />
+                <span className="text-sm font-medium text-surface-700 dark:text-surface-300">Draggable Widget</span>
+              </div>
+              <MoveIcon className="h-4 w-4 text-surface-500 dark:text-surface-400" />
+            </div>
+            <div className="p-4">
+              <p className="text-sm text-surface-600 dark:text-surface-300">
+                This is a draggable component. Grab the handle above to move this widget around the screen.
+              </p>
+            </div>
+          </div>
+        </Draggable>
       </main>
 
       <footer className="mt-auto py-4 bg-white dark:bg-surface-800 border-t border-surface-200 dark:border-surface-700">
